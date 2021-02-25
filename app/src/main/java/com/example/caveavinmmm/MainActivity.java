@@ -1,7 +1,9 @@
 package com.example.caveavinmmm;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -17,7 +19,15 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        SharedPreferences mPrefs = getSharedPreferences("bestcellar", 0);
+        String mail = mPrefs.getString("mail", "");
+        if(mail != "") {
+            Intent intent = new Intent(this, MenuActivity.class);
+            startActivity(intent);
+        }
+        else {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
     }
 }

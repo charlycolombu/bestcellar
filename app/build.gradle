@@ -35,6 +35,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.navigation:navigation-fragment:2.3.3'
     implementation 'androidx.navigation:navigation-ui:2.3.3'
+    implementation 'pub.devrel:easypermissions:2.0.1'
     //noinspection GradleCompatible
     implementation "com.android.support:support-core-utils:28.0.0"
     testImplementation 'junit:junit:4.+'

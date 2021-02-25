@@ -1,6 +1,7 @@
 package com.example.caveavinmmm;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -77,6 +78,9 @@ public class LoginActivity extends AppCompatActivity {
                 User user = db.getUser(email, password);
                 if (user != null) {
                     Toast.makeText(LoginActivity.this, "User correct", Toast.LENGTH_SHORT).show();
+                    SharedPreferences mPrefs = getSharedPreferences("bestcellar", 0);
+                    SharedPreferences.Editor mEditor = mPrefs.edit();
+                    mEditor.putString("mail", email).commit();
                     Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
                     startActivityForResult(intent, REQUEST_SIGNUP);
                     finish();

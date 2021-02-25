@@ -1,12 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    tools:context="com.example.caveavinmmm.fragments.ProfileFragment">
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fragment Profil"
-        android:textSize="30sp"
-        android:layout_centerInParent="true"/>
-</RelativeLayout>
+        android:id="@+id/name"
+        android:layout_width="161dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="116dp"
+        android:layout_marginTop="252dp"
+        android:layout_marginEnd="116dp"
+        android:layout_marginBottom="549dp"
+        android:gravity="center_horizontal"
+        android:text="Charly Colombu"
+        android:textColor="#525464"
+        android:textSize="22dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/btn_produits"
+        android:layout_width="315dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="334dp"
+        android:layout_marginEnd="39dp"
+        android:layout_marginBottom="435dp"
+        android:background="@drawable/ic_button_login"
+        android:text="Mes produits"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/btn_avis"
+        android:layout_width="315dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="540dp"
+        android:layout_marginEnd="39dp"
+        android:layout_marginBottom="229dp"
+        android:background="@drawable/ic_button_login"
+        android:text="Mes avis"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/btn_wishlist"
+        android:layout_width="315dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="437dp"
+        android:layout_marginEnd="39dp"
+        android:layout_marginBottom="332dp"
+        android:background="@drawable/ic_button_login"
+        android:text="Ma wishlist"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/btn_deconnect"
+        android:layout_width="315dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="641dp"
+        android:layout_marginEnd="39dp"
+        android:layout_marginBottom="128dp"
+        android:background="@drawable/ic_button_login"
+        android:backgroundTint="@color/disconnect"
+        android:text="Déconnexion"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

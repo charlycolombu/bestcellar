@@ -1,10 +1,14 @@
 package com.example.caveavinmmm;
 
+import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.caveavinmmm.fragments.AccueilFragment;
@@ -15,7 +19,11 @@ import com.example.caveavinmmm.fragments.WishlistFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import pub.devrel.easypermissions.EasyPermissions;
+
 public class MenuActivity extends AppCompatActivity {
+    private static final int PERMISSION_REQUEST_CODE = 200;
+
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             item -> {
                 Fragment selectedFragment = null;
@@ -60,6 +68,11 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MenuActivity.this, "Bouton photo appuyé", Toast.LENGTH_SHORT).show();
+                ActivityCompat.requestPermissions(MenuActivity.this,
+                        new String[]{Manifest.permission.CAMERA},
+                        PERMISSION_REQUEST_CODE);
+                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                startActivity(intent);
             }
         });
     }

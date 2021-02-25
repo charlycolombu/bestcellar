@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primaryColor">#c69c6d</color>
     <color name="secondaryColor">#806540</color>
+    <color name="disconnect">#DA251C</color>
 </resources>
