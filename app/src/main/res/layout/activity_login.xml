@@ -32,7 +32,7 @@
         android:layout_height="138dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="363dp"
-        android:src="@drawable/illustration"
+        android:src="@drawable/logo_transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
