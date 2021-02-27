@@ -2,6 +2,7 @@ package com.example.caveavinmmm.fragments;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +10,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
@@ -22,6 +25,11 @@ import com.example.caveavinmmm.R;
 import com.example.caveavinmmm.data.UserDAO;
 import com.example.caveavinmmm.data.UserDatabase;
 import com.example.caveavinmmm.model.User;
+import com.theartofdev.edmodo.cropper.CropImage;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
 
@@ -30,6 +38,10 @@ public class ProfileFragment extends Fragment {
     Button _avisButton;
     Button _produitsButton;
     Button _disconnectButton;
+    CircleImageView _profileImage;
+
+    private Uri imageUri;
+    private String myUri = "";
 
     UserDAO db;
     UserDatabase dataBase;
@@ -47,8 +59,10 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        _name = view.findViewById(R.id.name);
-        _disconnectButton = view.findViewById(R.id.btn_deconnect);
+        _name = (TextView) view.findViewById(R.id.name);
+        _disconnectButton = (Button) view.findViewById(R.id.btn_deconnect);
+        _profileImage = (CircleImageView) view.findViewById(R.id.btn_photo);
+        _wishlistButton = (Button) view.findViewById(R.id.btn_wishlist);
 
         SharedPreferences mPrefs = this.getActivity().getSharedPreferences("bestcellar", 0);
         String mail = mPrefs.getString("mail", "");
@@ -71,5 +85,15 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        _wishlistButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment wishlistFragment = new WishlistFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, wishlistFragment );
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
     }
-}
+ }
