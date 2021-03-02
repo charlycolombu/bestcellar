@@ -1,6 +1,7 @@
 package com.example.caveavinmmm;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,11 +9,14 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +45,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,17 +61,22 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+
 public class MenuActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 200;
     private static final int CAMERA_REQUEST = 1888;
     private static final int GALLERY_REQUEST = 1889;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    public static final int MEDIA_TYPE_IMAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
     ImaggaResponse imaggaResponse;
+    ContentValues values;
+    Uri fileUri;
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             item -> {
@@ -115,7 +125,12 @@ public class MenuActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(MenuActivity.this,
                         new String[]{Manifest.permission.CAMERA},
                         PERMISSION_REQUEST_CODE);
+                // create Intent to take a picture and return control to the calling application
+                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                StrictMode.setVmPolicy(builder.build());
                 Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
                 startActivityForResult(intent, CAMERA_REQUEST);
                 Log.e("onClick", "ok");
             }
@@ -139,28 +154,11 @@ public class MenuActivity extends AppCompatActivity {
         }
 
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            String imageurl = getRealPathFromURI(fileUri);
 
-            //if you want to encode the image into base64
-            if (imageBitmap!=null) {
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                String encodeImage = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
-            }
-
-            Uri tempUri = getImageUri(getApplicationContext(), imageBitmap);
-
-            // CALL THIS METHOD TO GET THE ACTUAL PATH
-            File finalFile = new File(getRealPathFromURI(tempUri));
-
+            File finalFile = new File(fileUri.getPath());
             Toast.makeText(MenuActivity.this, finalFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-
-            //File finalFile = new File("sdcard/DCIM/Camera/20200904_152621.jpg");
-            Date lastModDate = new Date(finalFile.lastModified());
-
-            Toast.makeText(MenuActivity.this, lastModDate.toString(), Toast.LENGTH_SHORT).show();
+            
             callImagga(finalFile);
         }
     }
@@ -177,6 +175,7 @@ public class MenuActivity extends AppCompatActivity {
                 imaggaResponse = response.body();
                 for(Text text : imaggaResponse.getResult().getText()) {
                     Log.d("RETRO", text.getData());
+                    Toast.makeText(MenuActivity.this, text.getData(), Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -207,5 +206,53 @@ public class MenuActivity extends AppCompatActivity {
             }
         }
         return path;
+    }
+
+    public String getRealPathFromURIBis(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
+    /** Create a file Uri for saving an image or video */
+    private static Uri getOutputMediaFileUri(int type){
+        return Uri.fromFile(getOutputMediaFile(type));
+    }
+
+    /** Create a File for saving an image or video */
+    private static File getOutputMediaFile(int type){
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "MyCameraApp");
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                Log.d("MyCameraApp", "failed to create directory");
+                return null;
+            }
+        }
+
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        if (type == MEDIA_TYPE_IMAGE){
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "IMG_"+ timeStamp + ".jpg");
+        } else if(type == MEDIA_TYPE_VIDEO) {
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "VID_"+ timeStamp + ".mp4");
+        } else {
+            return null;
+        }
+
+        return mediaFile;
     }
 }
