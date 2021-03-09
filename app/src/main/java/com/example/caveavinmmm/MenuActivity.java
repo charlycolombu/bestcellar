@@ -1,6 +1,7 @@
 package com.example.caveavinmmm;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -12,54 +13,36 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.caveavinmmm.api.ImaggaClient;
 import com.example.caveavinmmm.api.UploadApis;
 import com.example.caveavinmmm.fragments.AccueilFragment;
 import com.example.caveavinmmm.fragments.MapFragment;
 import com.example.caveavinmmm.fragments.ProfileFragment;
-import com.example.caveavinmmm.fragments.RechercheFragment;
-import com.example.caveavinmmm.fragments.WishlistFragment;
 import com.example.caveavinmmm.response.ImaggaResponse;
 import com.example.caveavinmmm.response.Text;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.JsonObject;
-
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import pub.devrel.easypermissions.EasyPermissions;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 
@@ -85,14 +68,8 @@ public class MenuActivity extends AppCompatActivity {
                     case R.id.nav_accueil:
                         selectedFragment = new AccueilFragment();
                         break;
-                    case R.id.nav_recherche:
-                        selectedFragment = new RechercheFragment();
-                        break;
                     case R.id.nav_map:
                         selectedFragment = new MapFragment();
-                        break;
-                    case R.id.nav_wishlist:
-                        selectedFragment = new WishlistFragment();
                         break;
                     case R.id.nav_profil:
                         selectedFragment = new ProfileFragment();
@@ -169,10 +146,22 @@ public class MenuActivity extends AppCompatActivity {
 
         UploadApis api = ImaggaClient.getApiServices();
         Call<ImaggaResponse> upload = api.uploadImage("Basic YWNjXzZhNjZhNGUxNTM5Mzc3NzpmZjY3MGMwYTVjN2UyNTBjNDBiYjczMTEwMzZjYTRkMA==", partImage);
+
+        // Set up progress before call
+        final ProgressDialog progressDoalog;
+        progressDoalog = new ProgressDialog(MenuActivity.this);
+        progressDoalog.setMax(100);
+        progressDoalog.setMessage("Its loading....");
+        progressDoalog.setTitle("ProgressDialog bar example");
+        progressDoalog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        // show it
+        progressDoalog.show();
+
         upload.enqueue(new Callback<ImaggaResponse>() {
             @Override
             public void onResponse(Call<ImaggaResponse> call, Response<ImaggaResponse> response) {
                 imaggaResponse = response.body();
+                progressDoalog.dismiss();
                 for(Text text : imaggaResponse.getResult().getText()) {
                     Log.d("RETRO", text.getData());
                     Toast.makeText(MenuActivity.this, text.getData(), Toast.LENGTH_LONG).show();
@@ -181,6 +170,7 @@ public class MenuActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ImaggaResponse> call, Throwable t) {
+                progressDoalog.dismiss();
                 Log.d("RETRO", t.toString());
             }
         });

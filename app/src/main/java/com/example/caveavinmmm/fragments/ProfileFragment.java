@@ -34,7 +34,6 @@ import static android.app.Activity.RESULT_OK;
 public class ProfileFragment extends Fragment {
 
     TextView _name;
-    Button _wishlistButton;
     Button _avisButton;
     Button _produitsButton;
     Button _disconnectButton;
@@ -62,7 +61,6 @@ public class ProfileFragment extends Fragment {
         _name = (TextView) view.findViewById(R.id.name);
         _disconnectButton = (Button) view.findViewById(R.id.btn_deconnect);
         _profileImage = (CircleImageView) view.findViewById(R.id.btn_photo);
-        _wishlistButton = (Button) view.findViewById(R.id.btn_wishlist);
 
         SharedPreferences mPrefs = this.getActivity().getSharedPreferences("bestcellar", 0);
         String mail = mPrefs.getString("mail", "");
@@ -82,17 +80,6 @@ public class ProfileFragment extends Fragment {
                 mPrefs.edit().clear().commit();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
-            }
-        });
-
-        _wishlistButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment wishlistFragment = new WishlistFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, wishlistFragment );
-                transaction.addToBackStack(null);
-                transaction.commit();
             }
         });
     }
