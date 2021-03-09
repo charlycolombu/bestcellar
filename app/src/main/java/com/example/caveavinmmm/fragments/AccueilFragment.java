@@ -1,9 +1,11 @@
 package com.example.caveavinmmm.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -17,6 +19,7 @@ import com.example.caveavinmmm.data.UserDatabase;
 import com.example.caveavinmmm.data.WineDAO;
 import com.example.caveavinmmm.model.Wine;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,6 +28,9 @@ public class AccueilFragment extends Fragment {
     private Button wineButton;
     private Button beerButton;
     private ListView drinkList;
+
+    ArrayList<String> listItems = new ArrayList<String>();
+    ArrayAdapter<String> adapter;
 
     View inflatedView = null;
 
@@ -48,11 +54,7 @@ public class AccueilFragment extends Fragment {
         wineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<Wine> wine = db.getWine();
-                Iterator<Wine> it = wine.iterator();
-                while (it.hasNext()){
-                    Toast.makeText(getActivity(), it.next().getNomVin(), Toast.LENGTH_LONG).show();
-                }
+                addWine();
             }
         });
 
@@ -66,4 +68,15 @@ public class AccueilFragment extends Fragment {
         return inflatedView;
     }
 
+    public void addWine(){
+        List<Wine> wine = db.getWine();
+        Iterator<Wine> it = wine.iterator();
+        while (it.hasNext()){
+            listItems.add(it.next().getNomVin());
+        }
+        
+        adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_list_item_1, listItems);
+
+        drinkList.setAdapter(adapter);
+    }
 }
