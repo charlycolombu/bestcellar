@@ -1,6 +1,5 @@
 package com.example.caveavinmmm.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,16 +10,26 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.room.Room;
 
 import com.example.caveavinmmm.R;
-import com.example.caveavinmmm.SignupActivity;
+import com.example.caveavinmmm.data.UserDatabase;
+import com.example.caveavinmmm.data.WineDAO;
+import com.example.caveavinmmm.model.Wine;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class AccueilFragment extends Fragment {
 
     private Button wineButton;
     private Button beerButton;
     private ListView drinkList;
+
     View inflatedView = null;
+
+    WineDAO db;
+    UserDatabase dataBase;
 
     @Nullable
     @Override
@@ -30,10 +39,20 @@ public class AccueilFragment extends Fragment {
         beerButton = (Button) inflatedView.findViewById(R.id.beer_button);
         drinkList = (ListView) inflatedView.findViewById(R.id.drink_list);
 
+        dataBase = Room.databaseBuilder(this.getContext(), UserDatabase.class, "vin-database.db")
+                .allowMainThreadQueries()
+                .build();
+
+        db = dataBase.getWineDao();
+
         wineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "text2", Toast.LENGTH_LONG).show();
+                List<Wine> wine = db.getWine();
+                Iterator<Wine> it = wine.iterator();
+                while (it.hasNext()){
+                    Toast.makeText(getActivity(), it.next().getNomVin(), Toast.LENGTH_LONG).show();
+                }
             }
         });
 

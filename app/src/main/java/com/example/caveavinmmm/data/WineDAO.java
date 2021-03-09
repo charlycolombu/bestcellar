@@ -8,6 +8,8 @@ import androidx.room.Update;
 
 import com.example.caveavinmmm.model.Wine;
 
+import java.util.List;
+
 @Dao
 public interface WineDAO {
     @Query("SELECT * FROM wine_table where nom_vin= :nomVin")
@@ -15,6 +17,9 @@ public interface WineDAO {
 
     @Query("SELECT * FROM wine_table where id= :id")
     Wine findWineById(int id);
+
+    @Query("SELECT * FROM wine_table")
+    List<Wine> getWine();
 
     @Insert
     void insert(Wine wine);
