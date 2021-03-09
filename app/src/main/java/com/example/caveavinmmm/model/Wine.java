@@ -31,14 +31,10 @@ public class Wine implements Serializable {
     @ColumnInfo(name = "commentaire")
     private String commentaire;
 
-    public Wine(Bitmap photo, String vignoble, String nomVin, int note, int prix, String type, String commentaire) {
-        this.photo = photo;
+    public Wine(String vignoble, String nomVin, String type) {
         this.vignoble = vignoble;
         this.nomVin = nomVin;
-        this.note = note;
-        this.prix = prix;
         this.type = type;
-        this.commentaire = commentaire;
     }
 
     @NonNull
@@ -102,7 +98,7 @@ public class Wine implements Serializable {
         return photo;
     }
 
-    public void setCommentaire(Bitmap photo) {
+    public void setPhoto(Bitmap photo) {
         this.photo = photo;
     }
 

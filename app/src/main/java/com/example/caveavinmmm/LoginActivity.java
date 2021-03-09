@@ -52,10 +52,11 @@ public class LoginActivity extends AppCompatActivity {
 
         _signupLink.setText(ss);
 
-        dataBase = Room.databaseBuilder(this, UserDatabase.class, "vin-database.db")
+        /*dataBase = Room.databaseBuilder(this, UserDatabase.class, "vin-database.db")
                 .allowMainThreadQueries()
-                .build();
+                .build();*/
 
+        dataBase = UserDatabase.getInstance(this);
         db = dataBase.getUserDao();
 
         _signupLink.setOnClickListener(new View.OnClickListener() {

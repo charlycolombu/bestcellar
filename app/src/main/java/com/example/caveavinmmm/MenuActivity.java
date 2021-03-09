@@ -1,9 +1,11 @@
 package com.example.caveavinmmm;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -15,6 +17,8 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,9 +27,12 @@ import androidx.fragment.app.Fragment;
 
 import com.example.caveavinmmm.api.ImaggaClient;
 import com.example.caveavinmmm.api.UploadApis;
+import com.example.caveavinmmm.data.UserDatabase;
+import com.example.caveavinmmm.data.WineDAO;
 import com.example.caveavinmmm.fragments.AccueilFragment;
 import com.example.caveavinmmm.fragments.MapFragment;
 import com.example.caveavinmmm.fragments.ProfileFragment;
+import com.example.caveavinmmm.model.Wine;
 import com.example.caveavinmmm.response.ImaggaResponse;
 import com.example.caveavinmmm.response.Text;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -57,9 +64,13 @@ public class MenuActivity extends AppCompatActivity {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
-    ImaggaResponse imaggaResponse;
-    ContentValues values;
-    Uri fileUri;
+    private ImaggaResponse imaggaResponse;
+    private ContentValues values;
+    private Uri fileUri;
+    private AlertDialog dialog;
+
+    WineDAO wineDAO;
+    UserDatabase dataBase;
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             item -> {
@@ -151,8 +162,7 @@ public class MenuActivity extends AppCompatActivity {
         final ProgressDialog progressDoalog;
         progressDoalog = new ProgressDialog(MenuActivity.this);
         progressDoalog.setMax(100);
-        progressDoalog.setMessage("Its loading....");
-        progressDoalog.setTitle("ProgressDialog bar example");
+        progressDoalog.setMessage("Chargement....");
         progressDoalog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         // show it
         progressDoalog.show();
@@ -162,10 +172,11 @@ public class MenuActivity extends AppCompatActivity {
             public void onResponse(Call<ImaggaResponse> call, Response<ImaggaResponse> response) {
                 imaggaResponse = response.body();
                 progressDoalog.dismiss();
-                for(Text text : imaggaResponse.getResult().getText()) {
+                /*for(Text text : imaggaResponse.getResult().getText()) {
                     Log.d("RETRO", text.getData());
                     Toast.makeText(MenuActivity.this, text.getData(), Toast.LENGTH_LONG).show();
-                }
+                }*/
+                findProductWithImagga(imaggaResponse);
             }
 
             @Override
@@ -244,5 +255,60 @@ public class MenuActivity extends AppCompatActivity {
         }
 
         return mediaFile;
+    }
+
+    public void findProductWithImagga(ImaggaResponse response) {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        createNewProductDialog();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Produit non trouvé. Voulez-vous le créer ?").setPositiveButton("Oui", dialogClickListener)
+                .setNegativeButton("Non", dialogClickListener).show();
+    }
+
+    public void createNewProductDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View productPopupView = getLayoutInflater().inflate(R.layout.popup_product, null);
+
+        EditText vignoble = (EditText) productPopupView.findViewById(R.id.input_vignoble);
+        EditText nomVin = (EditText) productPopupView.findViewById(R.id.input_nomvin);
+        EditText typeVin = (EditText) productPopupView.findViewById(R.id.input_type);
+
+        Button cancel = (Button) productPopupView.findViewById(R.id.btn_annuler);
+        Button ajouter = (Button) productPopupView.findViewById(R.id.btn_ajouter);
+
+        builder.setView(productPopupView);
+        dialog = builder.create();
+        dialog.show();
+
+        dataBase = UserDatabase.getInstance(this);
+        wineDAO = dataBase.getWineDao();
+
+        ajouter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Wine wine = new Wine(vignoble.getText().toString().trim(), nomVin.getText().toString().trim(), typeVin.getText().toString().trim());
+                wineDAO.insert(wine);
+                dialog.dismiss();
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 }

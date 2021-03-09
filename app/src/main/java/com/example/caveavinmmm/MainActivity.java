@@ -9,7 +9,14 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.caveavinmmm.data.UserDAO;
+import com.example.caveavinmmm.data.UserDatabase;
+import com.example.caveavinmmm.model.User;
+
 public class MainActivity extends AppCompatActivity {
+    UserDatabase dataBase;
+    UserDAO db;
+    User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +28,11 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences mPrefs = getSharedPreferences("bestcellar", 0);
         String mail = mPrefs.getString("mail", "");
-        if(mail != "") {
+        dataBase = UserDatabase.getInstance(this);
+        db = dataBase.getUserDao();
+        currentUser = db.findUserByMail(mail);
+
+        if(currentUser != null) {
             Intent intent = new Intent(this, MenuActivity.class);
             startActivity(intent);
         }

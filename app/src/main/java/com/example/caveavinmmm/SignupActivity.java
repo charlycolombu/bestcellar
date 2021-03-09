@@ -58,8 +58,7 @@ public class SignupActivity extends AppCompatActivity {
 
         _loginLink.setText(ss);
 
-        userDao = Room.databaseBuilder(this, UserDatabase.class, "vin-database.db").allowMainThreadQueries()
-                .build().getUserDao();
+        userDao = UserDatabase.getInstance(this).getUserDao();
 
         _loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
