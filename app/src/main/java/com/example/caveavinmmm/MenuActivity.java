@@ -13,54 +13,36 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.caveavinmmm.api.ImaggaClient;
 import com.example.caveavinmmm.api.UploadApis;
 import com.example.caveavinmmm.fragments.AccueilFragment;
 import com.example.caveavinmmm.fragments.MapFragment;
 import com.example.caveavinmmm.fragments.ProfileFragment;
-import com.example.caveavinmmm.fragments.RechercheFragment;
-import com.example.caveavinmmm.fragments.WishlistFragment;
 import com.example.caveavinmmm.response.ImaggaResponse;
 import com.example.caveavinmmm.response.Text;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.JsonObject;
-
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import pub.devrel.easypermissions.EasyPermissions;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 
@@ -86,14 +68,8 @@ public class MenuActivity extends AppCompatActivity {
                     case R.id.nav_accueil:
                         selectedFragment = new AccueilFragment();
                         break;
-                    case R.id.nav_recherche:
-                        selectedFragment = new RechercheFragment();
-                        break;
                     case R.id.nav_map:
                         selectedFragment = new MapFragment();
-                        break;
-                    case R.id.nav_wishlist:
-                        selectedFragment = new WishlistFragment();
                         break;
                     case R.id.nav_profil:
                         selectedFragment = new ProfileFragment();

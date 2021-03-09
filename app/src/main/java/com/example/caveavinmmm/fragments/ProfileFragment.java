@@ -88,9 +88,7 @@ public class ProfileFragment extends Fragment {
         _wishlistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment wishlistFragment = new WishlistFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, wishlistFragment );
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
