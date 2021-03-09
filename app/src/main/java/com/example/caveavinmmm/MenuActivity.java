@@ -1,6 +1,7 @@
 package com.example.caveavinmmm;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -169,10 +170,22 @@ public class MenuActivity extends AppCompatActivity {
 
         UploadApis api = ImaggaClient.getApiServices();
         Call<ImaggaResponse> upload = api.uploadImage("Basic YWNjXzZhNjZhNGUxNTM5Mzc3NzpmZjY3MGMwYTVjN2UyNTBjNDBiYjczMTEwMzZjYTRkMA==", partImage);
+
+        // Set up progress before call
+        final ProgressDialog progressDoalog;
+        progressDoalog = new ProgressDialog(MenuActivity.this);
+        progressDoalog.setMax(100);
+        progressDoalog.setMessage("Its loading....");
+        progressDoalog.setTitle("ProgressDialog bar example");
+        progressDoalog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        // show it
+        progressDoalog.show();
+
         upload.enqueue(new Callback<ImaggaResponse>() {
             @Override
             public void onResponse(Call<ImaggaResponse> call, Response<ImaggaResponse> response) {
                 imaggaResponse = response.body();
+                progressDoalog.dismiss();
                 for(Text text : imaggaResponse.getResult().getText()) {
                     Log.d("RETRO", text.getData());
                     Toast.makeText(MenuActivity.this, text.getData(), Toast.LENGTH_LONG).show();
@@ -181,6 +194,7 @@ public class MenuActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ImaggaResponse> call, Throwable t) {
+                progressDoalog.dismiss();
                 Log.d("RETRO", t.toString());
             }
         });

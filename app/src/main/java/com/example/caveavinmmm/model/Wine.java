@@ -50,6 +50,14 @@ public class Wine implements Serializable {
         this.id = id;
     }
 
+    public String getVignoble() {
+        return vignoble;
+    }
+
+    public void setVignoble(String vignoble) {
+        this.vignoble = vignoble;
+    }
+
     public String getNomVin() {
         return nomVin;
     }
