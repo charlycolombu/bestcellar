@@ -66,7 +66,6 @@
         android:layout_width="315dp"
         android:layout_height="60dp"
         android:layout_marginStart="39dp"
-        android:layout_marginTop="540dp"
         android:layout_marginEnd="39dp"
         android:layout_marginBottom="229dp"
         android:background="@drawable/ic_button_login"
@@ -75,24 +74,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
-
-    <Button
-        android:id="@+id/btn_wishlist"
-        android:layout_width="315dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="39dp"
-        android:layout_marginTop="437dp"
-        android:layout_marginEnd="39dp"
-        android:layout_marginBottom="332dp"
-        android:background="@drawable/ic_button_login"
-        android:text="Ma wishlist"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_produits"
         tools:ignore="MissingConstraints" />
 
     <Button
@@ -100,7 +82,6 @@
         android:layout_width="315dp"
         android:layout_height="60dp"
         android:layout_marginStart="39dp"
-        android:layout_marginTop="641dp"
         android:layout_marginEnd="39dp"
         android:layout_marginBottom="128dp"
         android:background="@drawable/ic_button_login"
@@ -110,7 +91,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_avis"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
