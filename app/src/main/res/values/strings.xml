@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Best Cellar</string>
+    <string name="wine_button">Mes vins</string>
+    <string name="beer_button">Mes bières</string>
 </resources>
