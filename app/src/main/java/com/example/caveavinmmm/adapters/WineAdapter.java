@@ -26,8 +26,9 @@ public class WineAdapter extends ArrayAdapter<WineElement> {
     public View getView(int position, View convertView, ViewGroup parent) {
         String nomVin = getItem(position).nomVin;
         String vignoble = getItem(position).vignoble;
+        String villeVin = getItem(position).villeVin;
 
-        WineElement wine = new WineElement(nomVin, vignoble);
+        WineElement wine = new WineElement(nomVin, vignoble/*, villeVin*/);
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mRessource, parent, false);

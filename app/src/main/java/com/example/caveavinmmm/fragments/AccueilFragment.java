@@ -75,7 +75,7 @@ public class AccueilFragment extends Fragment {
         Iterator<Wine> it = wine.iterator();
         while (it.hasNext()){
             Wine element = it.next();
-            listItems.add(new WineElement(element.getNomVin(), element.getVignoble()));
+            listItems.add(new WineElement(element.getNomVin(), element.getVignoble()/*, element.getVille()*/));
         }
         
         adapter = new WineAdapter(this.getContext(), R.layout.adapter_view_layout, listItems);

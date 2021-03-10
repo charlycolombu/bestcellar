@@ -30,6 +30,8 @@ public class Wine implements Serializable {
     private String type;
     @ColumnInfo(name = "commentaire")
     private String commentaire;
+    @ColumnInfo(name = "ville")
+    private String ville;
 
     public Wine(String vignoble, String nomVin, String type) {
         this.vignoble = vignoble;
@@ -94,6 +96,14 @@ public class Wine implements Serializable {
         this.commentaire = commentaire;
     }
 
+    public String getVille() {
+        return ville;
+    }
+
+    public void setVille(String ville) {
+        this.ville = ville;
+    }
+
     public Bitmap getPhoto() {
         return photo;
     }
@@ -112,6 +122,7 @@ public class Wine implements Serializable {
                 ", prix='" + prix + '\'' +
                 ", type='" + type + '\'' +
                 ", commentaire='" + commentaire + '\'' +
+                ", ville='" + ville + '\'' +
                 '}';
     }
 }
