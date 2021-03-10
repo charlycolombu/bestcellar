@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -12,8 +13,12 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
 
+import com.example.caveavinmmm.LoginActivity;
+import com.example.caveavinmmm.MainActivity;
 import com.example.caveavinmmm.R;
 import com.example.caveavinmmm.adapters.WineAdapter;
 import com.example.caveavinmmm.adapters.WineElement;
@@ -71,7 +76,12 @@ public class AccueilFragment extends Fragment {
     }
 
     public void addWine(){
-        List<Wine> wine = db.getWine();
+        //List<Wine> wine = db.getWine();
+        List<Wine> wine = new ArrayList<>();
+        wine.add(new Wine("v1", "Vin1", "vin"));
+        wine.add(new Wine("v2", "Vin2", "vin"));
+        wine.add(new Wine("v3", "Vin3", "vin"));
+        wine.add(new Wine("v4", "Vin4", "vin"));
         Iterator<Wine> it = wine.iterator();
         while (it.hasNext()){
             Wine element = it.next();
@@ -81,6 +91,20 @@ public class AccueilFragment extends Fragment {
         adapter = new WineAdapter(this.getContext(), R.layout.adapter_view_layout, listItems);
 
         drinkList.setAdapter(adapter);
+
+        drinkList.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Toast.makeText(adapterView.getContext(), "test", Toast.LENGTH_SHORT).show();
+                        FragmentManager fm = getFragmentManager();
+                        FragmentTransaction ft = fm.beginTransaction();
+                        DetailFragment detailFragment = new DetailFragment();
+                        ft.replace(R.id.fragment_container, detailFragment);
+                        ft.commit();
+                    }
+                }
+        );
     }
 
     public void clearList(){
