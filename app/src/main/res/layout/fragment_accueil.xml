@@ -19,6 +19,7 @@
                 android:id="@+id/wine_button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:background="@drawable/ic_button_login"
                 android:layout_weight="1"
                 android:text="@string/wine_button" />
 
@@ -26,6 +27,7 @@
                 android:id="@+id/beer_button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:background="@drawable/ic_button_login"
                 android:layout_weight="1"
                 android:text="@string/beer_button" />
         </LinearLayout>

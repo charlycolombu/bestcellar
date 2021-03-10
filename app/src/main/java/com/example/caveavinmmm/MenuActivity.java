@@ -44,6 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -281,12 +282,14 @@ public class MenuActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final View productPopupView = getLayoutInflater().inflate(R.layout.popup_product, null);
 
+        CircleImageView photoVin = (CircleImageView) productPopupView.findViewById(R.id.input_photo);
         EditText vignoble = (EditText) productPopupView.findViewById(R.id.input_vignoble);
         EditText nomVin = (EditText) productPopupView.findViewById(R.id.input_nomvin);
         EditText typeVin = (EditText) productPopupView.findViewById(R.id.input_type);
 
         Button cancel = (Button) productPopupView.findViewById(R.id.btn_annuler);
         Button ajouter = (Button) productPopupView.findViewById(R.id.btn_ajouter);
+        Button btnPhoto = (Button) productPopupView.findViewById(R.id.btn_photo);
 
         builder.setView(productPopupView);
         dialog = builder.create();
@@ -294,6 +297,7 @@ public class MenuActivity extends AppCompatActivity {
 
         dataBase = UserDatabase.getInstance(this);
         wineDAO = dataBase.getWineDao();
+
 
         ajouter.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.room.Room;
 
 import com.example.caveavinmmm.R;
+import com.example.caveavinmmm.adapters.WineAdapter;
+import com.example.caveavinmmm.adapters.WineElement;
 import com.example.caveavinmmm.data.UserDatabase;
 import com.example.caveavinmmm.data.WineDAO;
 import com.example.caveavinmmm.model.Wine;
@@ -29,8 +31,8 @@ public class AccueilFragment extends Fragment {
     private Button beerButton;
     private ListView drinkList;
 
-    ArrayList<String> listItems = new ArrayList<String>();
-    ArrayAdapter<String> adapter;
+    ArrayList<WineElement> listItems = new ArrayList<WineElement>();
+    WineAdapter adapter;
 
     View inflatedView = null;
 
@@ -61,7 +63,7 @@ public class AccueilFragment extends Fragment {
         beerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "text", Toast.LENGTH_LONG).show();
+                clearList();
             }
         });
 
@@ -72,10 +74,19 @@ public class AccueilFragment extends Fragment {
         List<Wine> wine = db.getWine();
         Iterator<Wine> it = wine.iterator();
         while (it.hasNext()){
-            listItems.add(it.next().getNomVin());
+            Wine element = it.next();
+            listItems.add(new WineElement(element.getNomVin(), element.getVignoble()));
         }
         
-        adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_list_item_1, listItems);
+        adapter = new WineAdapter(this.getContext(), R.layout.adapter_view_layout, listItems);
+
+        drinkList.setAdapter(adapter);
+    }
+
+    public void clearList(){
+        listItems.clear();
+
+        adapter = new WineAdapter(this.getContext(), R.layout.adapter_view_layout, listItems);
 
         drinkList.setAdapter(adapter);
     }
