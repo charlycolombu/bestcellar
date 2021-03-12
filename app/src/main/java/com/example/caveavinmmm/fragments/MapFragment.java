@@ -33,11 +33,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.apache.commons.codec.binary.StringUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener{
 
@@ -78,35 +82,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
     public void setMarkersReady() {
-        /*dataBase = Room.databaseBuilder(this.getContext(), UserDatabase.class, "vin-database.db")
-                .allowMainThreadQueries()
-                .build();
-
+        dataBase = UserDatabase.getInstance(this.getContext());
         db = dataBase.getWineDao();
+        HashMap<Wine,LatLng> villeCoord = new HashMap<Wine,LatLng>();
         List<Wine> wine = db.getWine();
-        Iterator<Wine> it = wine.iterator();
-        while (it.hasNext()){
-            Wine element = it.next();
-            listWines.add(new WineElement(element.getNomVin(), element.getVignoble(), element.getVille()));
+        Iterator<Wine> it1 = wine.iterator();
+        while (it1.hasNext()){
+            Wine element = it1.next();
+            if(element.getVille() != null) {
+                villeCoord.put(element, getLocationFromAddress(getContext(), element.getVille()));
+            }
         }
 
-        for (WineElement wineElement: listWines) {
-            rechercheCoordonnees(wineElement.villeVin);
-        }*/
-
-        mGoogleMap.addMarker(new MarkerOptions().title("Rennes").icon(bitmapDescriptorFromVector(this.getContext(), R.drawable.ic_beer_marker))
-.position(new LatLng(48.117266
-                , -1.6777926
-        )));// coordonnées de Rennes
-
-        mGoogleMap.addMarker(new MarkerOptions().title("Nantes").icon(bitmapDescriptorFromVector(this.getContext(), R.drawable.ic_wine_marker))
-.position(new LatLng(47.2172500
-                , -1.5533600
-        )));// coordonnées de Nantes
-        // Utilisation de la méthode créée plus haut.
-        //String adresseATransformer = "12 rue de la Convention, 75615, Paris";
-
-
+        Iterator it2 = villeCoord.entrySet().iterator();
+        while (it2.hasNext()) {
+            Map.Entry pair = (Map.Entry)it2.next();
+            Wine key = (Wine) pair.getKey();
+            LatLng coord = (LatLng) pair.getValue();
+            mGoogleMap.addMarker(new MarkerOptions().title(key.getNomVin() + " : " + key.getVille()).icon(bitmapDescriptorFromVector(this.getContext(), R.drawable.ic_wine_marker))
+                    .position(coord));
+        }
     }
 
    /* private void rechercheCoordonnees(String ville) {
@@ -174,5 +169,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         background.draw(canvas);
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+    public LatLng getLocationFromAddress(Context context,String strAddress) {
+
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+
+            Address location = address.get(0);
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
     }
 }

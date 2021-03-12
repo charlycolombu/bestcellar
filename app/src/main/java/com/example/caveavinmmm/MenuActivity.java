@@ -345,6 +345,7 @@ public class MenuActivity extends AppCompatActivity {
         winePhotoBitmap = imaggaBitmap;
         EditText vignoble = (EditText) productPopupView.findViewById(R.id.input_vignoble);
         EditText nomVin = (EditText) productPopupView.findViewById(R.id.input_nomvin);
+        EditText ville = (EditText) productPopupView.findViewById(R.id.input_ville);
         EditText typeVin = (EditText) productPopupView.findViewById(R.id.input_type);
 
         Button cancel = (Button) productPopupView.findViewById(R.id.btn_annuler);
@@ -363,6 +364,7 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Wine wine = new Wine(vignoble.getText().toString().trim(), nomVin.getText().toString().trim(), typeVin.getText().toString().trim());
+                wine.setVille(ville.getText().toString().trim());
                 wine.setPhoto(winePhotoBitmap);
                 wineDAO.insert(wine);
                 dialog.dismiss();
