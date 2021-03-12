@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,12 +26,16 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.room.Room;
 
 import com.example.caveavinmmm.api.ImaggaClient;
 import com.example.caveavinmmm.api.UploadApis;
 import com.example.caveavinmmm.data.UserDatabase;
 import com.example.caveavinmmm.data.WineDAO;
 import com.example.caveavinmmm.fragments.AccueilFragment;
+import com.example.caveavinmmm.fragments.DetailFragment;
 import com.example.caveavinmmm.fragments.MapFragment;
 import com.example.caveavinmmm.fragments.ProfileFragment;
 import com.example.caveavinmmm.model.Wine;
@@ -40,9 +46,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -68,10 +76,16 @@ public class MenuActivity extends AppCompatActivity {
     private ImaggaResponse imaggaResponse;
     private ContentValues values;
     private Uri fileUri;
+    private Uri winePhotoUri;
+    private Bitmap winePhotoBitmap;
+    private Bitmap imaggaBitmap;
     private AlertDialog dialog;
 
     WineDAO wineDAO;
     UserDatabase dataBase;
+
+    private CircleImageView photoVin;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             item -> {
@@ -105,6 +119,7 @@ public class MenuActivity extends AppCompatActivity {
         }
 
         FloatingActionButton fab = findViewById(R.id.btn_photo);
+        dataBase = UserDatabase.getInstance(this);
 
         fab.setOnClickListener(new View.OnClickListener() {
 
@@ -144,11 +159,27 @@ public class MenuActivity extends AppCompatActivity {
 
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
             String imageurl = getRealPathFromURI(fileUri);
+            try {
+                imaggaBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fileUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            imaggaBitmap = getResizedBitmap(imaggaBitmap, 100, 100);
 
             File finalFile = new File(fileUri.getPath());
             Toast.makeText(MenuActivity.this, finalFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
             
             callImagga(finalFile);
+        }
+
+        if(requestCode == MEDIA_TYPE_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            winePhotoUri = data.getData();
+            photoVin.setImageURI(winePhotoUri);
+            try {
+                winePhotoBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), winePhotoUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -173,11 +204,14 @@ public class MenuActivity extends AppCompatActivity {
             public void onResponse(Call<ImaggaResponse> call, Response<ImaggaResponse> response) {
                 imaggaResponse = response.body();
                 progressDoalog.dismiss();
-                /*for(Text text : imaggaResponse.getResult().getText()) {
-                    Log.d("RETRO", text.getData());
-                    Toast.makeText(MenuActivity.this, text.getData(), Toast.LENGTH_LONG).show();
-                }*/
-                findProductWithImagga(imaggaResponse);
+                String photoText = "";
+                for(Text text : imaggaResponse.getResult().getText()) {
+                    photoText += text.getData() + " ";
+                }
+                Toast.makeText(MenuActivity.this, photoText, Toast.LENGTH_LONG).show();
+                wineDAO = dataBase.getWineDao();
+                List<Wine> wines = wineDAO.getWine();
+                findProductWithImagga(photoText, wines);
             }
 
             @Override
@@ -258,31 +292,57 @@ public class MenuActivity extends AppCompatActivity {
         return mediaFile;
     }
 
-    public void findProductWithImagga(ImaggaResponse response) {
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
-                        createNewProductDialog();
-                        break;
-
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        break;
-                }
+    public void findProductWithImagga(String imaggaText, List<Wine> wines) {
+        boolean isOnDatabase = false;
+        Wine wineFound = null;
+        for(Wine wine : wines) {
+            if(imaggaText.toUpperCase().contains(wine.getNomVin().toUpperCase())) {
+                wineFound = wine;
+                isOnDatabase = true;
+                break;
             }
-        };
+        }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Produit non trouvé. Voulez-vous le créer ?").setPositiveButton("Oui", dialogClickListener)
-                .setNegativeButton("Non", dialogClickListener).show();
+        if(isOnDatabase) {
+            /*new AlertDialog.Builder(this)
+                    .setTitle("Produit trouvé en base")
+                    .setMessage("Nom du produit :  " + wineFound)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();*/
+            Toast.makeText(MenuActivity.this, "Produit trouvé", Toast.LENGTH_LONG).show();
+            Fragment fragment = new DetailFragment(wineFound);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment, fragment.getClass().getSimpleName())
+                    .commit();
+        }
+        else {
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            createNewProductDialog();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Produit non trouvé. Voulez-vous le créer ?").setPositiveButton("Oui", dialogClickListener)
+                    .setNegativeButton("Non", dialogClickListener).show();
+        }
     }
 
     public void createNewProductDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final View productPopupView = getLayoutInflater().inflate(R.layout.popup_product, null);
 
-        CircleImageView photoVin = (CircleImageView) productPopupView.findViewById(R.id.input_photo);
+        photoVin = (CircleImageView) productPopupView.findViewById(R.id.input_photo);
+        photoVin.setImageURI(fileUri);
+        winePhotoBitmap = imaggaBitmap;
         EditText vignoble = (EditText) productPopupView.findViewById(R.id.input_vignoble);
         EditText nomVin = (EditText) productPopupView.findViewById(R.id.input_nomvin);
         EditText typeVin = (EditText) productPopupView.findViewById(R.id.input_type);
@@ -303,6 +363,7 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Wine wine = new Wine(vignoble.getText().toString().trim(), nomVin.getText().toString().trim(), typeVin.getText().toString().trim());
+                wine.setPhoto(winePhotoBitmap);
                 wineDAO.insert(wine);
                 dialog.dismiss();
             }
@@ -314,5 +375,43 @@ public class MenuActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+
+        btnPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openImageForm();
+            }
+        });
+    }
+
+    private void openImageForm() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, MEDIA_TYPE_IMAGE);
+    }
+
+    private void isOnDatabase(ImaggaResponse response, List<Wine> wines) {
+        for(Text text : imaggaResponse.getResult().getText()) {
+            Log.d("RETRO", text.getData());
+            Toast.makeText(MenuActivity.this, text.getData(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postRotate(90);
+        matrix.postScale(scaleHeight, scaleWidth);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        return resizedBitmap;
     }
 }

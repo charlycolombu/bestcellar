@@ -1,59 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent"
+    tools:context=".MenuActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/item_photo"
-        android:layout_width="match_parent"
-        android:layout_height="229dp"
-        android:layout_weight="66.6"
-        android:gravity="center"
+        android:id="@+id/detail_photo"
+        android:layout_width="122dp"
+        android:layout_height="122dp"
+        android:layout_marginStart="135dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginEnd="136dp"
+        android:layout_marginBottom="577dp"
         android:src="@drawable/profile_pic"
-        android:textAlignment="center"
         app:civ_border_color="@color/primaryColor"
-        app:civ_border_width="2dp" />
+        app:civ_border_width="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/item_nomvin"
-        android:layout_width="match_parent"
+        android:id="@+id/detail_nomvin"
+        android:layout_width="381dp"
         android:layout_height="30dp"
-        android:gravity="left"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="255dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="544dp"
+        android:gravity="center"
         android:paddingStart="12dp"
-        android:text="Nom Vin" />
+        android:text="TextView1"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/item_vignoble"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:gravity="left"
+        android:id="@+id/detail_vignbole"
+        android:layout_width="387dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="291dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="516dp"
+        android:gravity="center"
         android:paddingStart="12dp"
-        android:text="Nom Vignoble"
+        android:text="TextView2"
+        android:textAlignment="center"
         android:textColor="@color/primaryColor"
-        android:textSize="10dp" />
-
-    <TextView
-        android:id="@+id/item_note"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:gravity="left"
-        android:paddingStart="12dp"
-        android:text="Note /5"
-        android:textColor="@color/primaryColor"
-        android:textSize="10dp" />
-
-    <EditText
-        android:id="@+id/editTextTextPersonName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="66.6"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name" />
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

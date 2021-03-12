@@ -1,6 +1,7 @@
 package com.example.caveavinmmm.fragments;
 
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +62,7 @@ public class AccueilFragment extends Fragment {
         wineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clearList();
                 addWine();
             }
         });
@@ -76,16 +78,11 @@ public class AccueilFragment extends Fragment {
     }
 
     public void addWine(){
-        //List<Wine> wine = db.getWine();
-        List<Wine> wine = new ArrayList<>();
-        wine.add(new Wine("v1", "Vin1", "vin"));
-        wine.add(new Wine("v2", "Vin2", "vin"));
-        wine.add(new Wine("v3", "Vin3", "vin"));
-        wine.add(new Wine("v4", "Vin4", "vin"));
+        List<Wine> wine = db.getWine();
         Iterator<Wine> it = wine.iterator();
         while (it.hasNext()){
             Wine element = it.next();
-            listItems.add(new WineElement(element.getNomVin(), element.getVignoble()/*, element.getVille()*/));
+            listItems.add(new WineElement(element.getPhoto(), element.getNomVin(), element.getVignoble()));
         }
         
         adapter = new WineAdapter(this.getContext(), R.layout.adapter_view_layout, listItems);
@@ -95,11 +92,10 @@ public class AccueilFragment extends Fragment {
         drinkList.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Toast.makeText(adapterView.getContext(), "test", Toast.LENGTH_SHORT).show();
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                         FragmentManager fm = getFragmentManager();
                         FragmentTransaction ft = fm.beginTransaction();
-                        DetailFragment detailFragment = new DetailFragment();
+                        DetailFragment detailFragment = new DetailFragment(wine.get(position));
                         ft.replace(R.id.fragment_container, detailFragment);
                         ft.commit();
                     }
